@@ -4,21 +4,31 @@ import socket from "../socket";
 function ChatBox({ username, room }) {
   const [message, setMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
+  const [showMenu, setShowMenu] = useState(false);
 
+  // ✅ Join room
   useEffect(() => {
+    if (!username || !room) return;
+
     socket.emit("join_room", { username, room });
   }, [username, room]);
 
+  // ✅ Receive messages
   useEffect(() => {
-    socket.on("receive_message", (data) => {
+    const receiveHandler = (data) => {
       setMessageList((list) => [...list, data]);
-    });
+    };
 
-    return () => socket.off("receive_message");
+    socket.on("receive_message", receiveHandler);
+
+    return () => {
+      socket.off("receive_message", receiveHandler);
+    };
   }, []);
 
+  // ✅ Send message
   const sendMessage = () => {
-    if (!message.trim()) return;
+    if (message.trim() === "") return;
 
     const msgData = {
       room,
@@ -35,20 +45,57 @@ function ChatBox({ username, room }) {
     setMessage("");
   };
 
+  // ✅ Clear chat
+  const clearChat = () => {
+    setMessageList([]);
+    setShowMenu(false);
+  };
+
+  // ✅ Logout
+  const logout = () => {
+    window.location.reload();
+  };
+
   return (
     <div style={styles.wrapper}>
       <div style={styles.chatBox}>
-
-        {/* Header */}
+        
+        {/* 🔥 HEADER */}
         <div style={styles.header}>
-          <div style={styles.avatar}>{username[0].toUpperCase()}</div>
-          <div>
-            <b>{username}</b>
-            <div style={{ fontSize: 12 }}>Online</div>
+          <div style={styles.headerLeft}>
+            <div style={styles.avatar}>
+              {username?.[0]?.toUpperCase()}
+            </div>
+
+            <div>
+              <b>{username}</b>
+              <div style={styles.online}>Online</div>
+            </div>
+          </div>
+
+          {/* 3-dot menu */}
+          <div style={{ position: "relative" }}>
+            <button
+              style={styles.menuBtn}
+              onClick={() => setShowMenu(!showMenu)}
+            >
+              ⋮
+            </button>
+
+            {showMenu && (
+              <div style={styles.dropdown}>
+                <div style={styles.dropdownItem} onClick={clearChat}>
+                  Clear Chat
+                </div>
+                <div style={styles.dropdownItem} onClick={logout}>
+                  Logout
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Messages */}
+        {/* 💬 MESSAGES */}
         <div style={styles.messages}>
           {messageList.map((msg, index) => (
             <div
@@ -66,7 +113,7 @@ function ChatBox({ username, room }) {
           ))}
         </div>
 
-        {/* Input */}
+        {/* ✍️ INPUT */}
         <div style={styles.inputArea}>
           <input
             style={styles.input}
@@ -79,6 +126,7 @@ function ChatBox({ username, room }) {
             ➤
           </button>
         </div>
+
       </div>
     </div>
   );
@@ -105,10 +153,16 @@ const styles = {
 
   header: {
     display: "flex",
+    justifyContent: "space-between",
     alignItems: "center",
-    gap: 10,
     padding: 15,
     background: "white",
+  },
+
+  headerLeft: {
+    display: "flex",
+    alignItems: "center",
+    gap: 10,
   },
 
   avatar: {
@@ -121,6 +175,34 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     fontWeight: "bold",
+  },
+
+  online: {
+    fontSize: 12,
+    color: "green",
+  },
+
+  menuBtn: {
+    background: "none",
+    border: "none",
+    fontSize: 20,
+    cursor: "pointer",
+  },
+
+  dropdown: {
+    position: "absolute",
+    right: 0,
+    top: 30,
+    background: "white",
+    borderRadius: 8,
+    boxShadow: "0 5px 15px rgba(0,0,0,0.1)",
+    overflow: "hidden",
+  },
+
+  dropdownItem: {
+    padding: "10px 15px",
+    cursor: "pointer",
+    borderBottom: "1px solid #eee",
   },
 
   messages: {
