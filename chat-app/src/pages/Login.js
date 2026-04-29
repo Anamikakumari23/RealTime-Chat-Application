@@ -1,3 +1,6 @@
+
+import React from "react";
+
 export default function Login({ setUsername, setPassword, login, register }) {
   return (
     <div style={styles.bg}>
@@ -17,11 +20,17 @@ export default function Login({ setUsername, setPassword, login, register }) {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button style={styles.loginBtn} onClick={login}>
+        <button
+          style={styles.loginBtn}
+          onClick={login}
+        >
           Login
         </button>
 
-        <button style={styles.registerBtn} onClick={register}>
+        <button
+          style={styles.registerBtn}
+          onClick={register}
+        >
           Register
         </button>
       </div>
@@ -37,6 +46,7 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
   },
+
   card: {
     width: "100%",
     maxWidth: 350,
@@ -45,27 +55,34 @@ const styles = {
     background: "white",
     display: "flex",
     flexDirection: "column",
-    gap: 12,
+    gap: 15,
     boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
   },
+
   title: {
     textAlign: "center",
+    marginBottom: 10,
   },
+
   input: {
     padding: 12,
     borderRadius: 25,
     border: "none",
     background: "#f1f5f9",
     outline: "none",
+    fontSize: 14,
   },
+
   loginBtn: {
     padding: 12,
     borderRadius: 25,
     border: "none",
-    background: "#818cf8",
+    background: "#6366f1",
     color: "white",
     cursor: "pointer",
+    fontWeight: "bold",
   },
+
   registerBtn: {
     padding: 12,
     borderRadius: 25,
@@ -73,5 +90,6 @@ const styles = {
     background: "#FBCFE8",
     color: "#831843",
     cursor: "pointer",
+    fontWeight: "bold",
   },
 };

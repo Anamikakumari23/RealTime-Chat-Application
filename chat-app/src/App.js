@@ -23,16 +23,23 @@ function App() {
         password,
       });
 
+      console.log("LOGIN RESPONSE:", res.data); // 🔍 DEBUG
+
+      // ❗ IMPORTANT CHECK
       if (res.data.error) {
         alert(res.data.error);
         return;
       }
 
+      // ✅ SUCCESS
       alert("Login successful ✅");
+
+      // 🔥 FORCE UI UPDATE
       setShowChat(true);
+
     } catch (err) {
-      console.error(err);
-      alert("Login failed ❌");
+      console.error("LOGIN ERROR:", err);
+      alert("Server not responding ❌");
     }
   };
 
@@ -49,6 +56,8 @@ function App() {
         password,
       });
 
+      console.log("REGISTER RESPONSE:", res.data);
+
       if (res.data.error) {
         alert(res.data.error);
         return;
@@ -56,7 +65,7 @@ function App() {
 
       alert("Registered successfully ✅");
     } catch (err) {
-      console.error(err);
+      console.error("REGISTER ERROR:", err);
       alert("Register failed ❌");
     }
   };

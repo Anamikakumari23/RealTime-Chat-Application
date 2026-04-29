@@ -5,39 +5,51 @@ function ChatBox({ username, room }) {
   const [message, setMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
 
-  // Join room
+  // ✅ Join room safely
   useEffect(() => {
+    if (!username || !room) return;
+
     socket.emit("join_room", { username, room });
-  }, []);
 
-  // Receive messages
+    console.log("Joined room:", room);
+
+  }, [username, room]);
+
+  // ✅ Receive messages
   useEffect(() => {
-    socket.on("receive_message", (data) => {
+    const receiveHandler = (data) => {
       setMessageList((list) => [...list, data]);
-    });
+    };
 
-    return () => socket.off("receive_message");
+    socket.on("receive_message", receiveHandler);
+
+    return () => {
+      socket.off("receive_message", receiveHandler);
+    };
   }, []);
 
-  // Send message
+  // ✅ Send message
   const sendMessage = () => {
-    if (message !== "") {
-      const msgData = {
-        room,
-        author: username,
-        message,
-        time: new Date().toLocaleTimeString(),
-      };
+    if (message.trim() === "") return;
 
-      socket.emit("send_message", msgData);
-      setMessageList((list) => [...list, msgData]);
-      setMessage("");
-    }
+    const msgData = {
+      room,
+      author: username,
+      message,
+      time: new Date().toLocaleTimeString(),
+    };
+
+    socket.emit("send_message", msgData);
+    setMessageList((list) => [...list, msgData]);
+    setMessage("");
   };
 
   return (
     <div style={styles.container}>
       <h3>Live Chat 💬</h3>
+
+      {/* 👇 Show username */}
+      <p><b>User:</b> {username}</p>
 
       <div style={styles.chatBox}>
         {messageList.map((msg, index) => (
