@@ -1,4 +1,18 @@
+import React, { useState } from "react";
+
 export default function JoinRoom({ setRoom, joinRoom }) {
+  const [roomInput, setRoomInput] = useState("");
+
+  const handleJoin = () => {
+    if (!roomInput.trim()) {
+      alert("Please enter a room ID");
+      return;
+    }
+
+    setRoom(roomInput); // ✅ set room only when clicking
+    joinRoom();         // ✅ go to chat
+  };
+
   return (
     <div style={styles.bg}>
       <div style={styles.card}>
@@ -7,10 +21,11 @@ export default function JoinRoom({ setRoom, joinRoom }) {
         <input
           style={styles.input}
           placeholder="Enter Room ID"
-          onChange={(e) => setRoom(e.target.value)}
+          value={roomInput}
+          onChange={(e) => setRoomInput(e.target.value)}
         />
 
-        <button style={styles.joinBtn} onClick={joinRoom}>
+        <button style={styles.joinBtn} onClick={handleJoin}>
           Join Room
         </button>
       </div>
@@ -21,7 +36,7 @@ export default function JoinRoom({ setRoom, joinRoom }) {
 const styles = {
   bg: {
     height: "100vh",
-    background: "#F2F3F7", // same as login
+    background: "#F2F3F7",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -57,7 +72,7 @@ const styles = {
     padding: 12,
     borderRadius: 25,
     border: "none",
-    background: "#818cf8",
+    background: "#6366f1",
     color: "white",
     cursor: "pointer",
     fontWeight: "bold",

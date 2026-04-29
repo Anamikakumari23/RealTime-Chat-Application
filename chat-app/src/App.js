@@ -1,19 +1,23 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Login from "./pages/Login";
+import JoinRoom from "./pages/JoinRoom";
 import ChatBox from "./components/ChatBox";
 
 function App() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
   const [showChat, setShowChat] = useState(false);
+  const [joined, setJoined] = useState(false);
+  const [room, setRoom] = useState("");
 
   const BACKEND_URL = "https://chatverse-backend-c441.onrender.com";
 
-  // LOGIN
+  // ✅ LOGIN
   const login = async () => {
     if (!username || !password) {
-      alert("Please enter username and password");
+      alert("Enter username & password");
       return;
     }
 
@@ -23,30 +27,23 @@ function App() {
         password,
       });
 
-      console.log("LOGIN RESPONSE:", res.data); // 🔍 DEBUG
-
-      // ❗ IMPORTANT CHECK
       if (res.data.error) {
         alert(res.data.error);
         return;
       }
 
-      // ✅ SUCCESS
       alert("Login successful ✅");
-
-      // 🔥 FORCE UI UPDATE
       setShowChat(true);
 
     } catch (err) {
-      console.error("LOGIN ERROR:", err);
-      alert("Server not responding ❌");
+      alert("Server error ❌");
     }
   };
 
-  // REGISTER
+  // ✅ REGISTER
   const register = async () => {
     if (!username || !password) {
-      alert("Please enter username and password");
+      alert("Enter username & password");
       return;
     }
 
@@ -56,16 +53,14 @@ function App() {
         password,
       });
 
-      console.log("REGISTER RESPONSE:", res.data);
-
       if (res.data.error) {
         alert(res.data.error);
         return;
       }
 
       alert("Registered successfully ✅");
+
     } catch (err) {
-      console.error("REGISTER ERROR:", err);
       alert("Register failed ❌");
     }
   };
@@ -79,8 +74,13 @@ function App() {
           login={login}
           register={register}
         />
+      ) : !joined ? (
+        <JoinRoom
+          setRoom={setRoom}
+          joinRoom={() => setJoined(true)}
+        />
       ) : (
-        <ChatBox username={username} room="general" />
+        <ChatBox username={username} room={room} />
       )}
     </div>
   );
