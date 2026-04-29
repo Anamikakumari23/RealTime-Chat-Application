@@ -1,4 +1,5 @@
 import Message from "./Message";
+//import socket from "../socket";  
 
 export default function ChatBox({ messageList, username, typingUser }) {
   return (

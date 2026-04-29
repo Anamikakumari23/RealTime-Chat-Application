@@ -32,12 +32,11 @@ export default function Login({ setUsername, setPassword, login, register }) {
 const styles = {
   bg: {
     height: "100vh",
-    background: "#F2F3F7", // light cool grey
+    background: "#F2F3F7",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
   },
-
   card: {
     width: "100%",
     maxWidth: 350,
@@ -49,12 +48,10 @@ const styles = {
     gap: 12,
     boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
   },
-
   title: {
     textAlign: "center",
     marginBottom: 10,
   },
-
   input: {
     padding: 12,
     borderRadius: 25,
@@ -63,7 +60,6 @@ const styles = {
     outline: "none",
     fontSize: 14,
   },
-
   loginBtn: {
     padding: 12,
     borderRadius: 25,
@@ -73,12 +69,11 @@ const styles = {
     cursor: "pointer",
     fontWeight: "bold",
   },
-
   registerBtn: {
     padding: 12,
     borderRadius: 25,
     border: "none",
-    background: "#FBCFE8", // pastel pink
+    background: "#FBCFE8",
     color: "#831843",
     cursor: "pointer",
     fontWeight: "bold",

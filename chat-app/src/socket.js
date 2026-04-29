@@ -1,3 +1,9 @@
 import { io } from "socket.io-client";
 
-export const socket = io("http://localhost:5000");
+const URL = "https://chatverse-backend-c441.onrender.com";
+
+const socket = io(URL, {
+  transports: ["websocket"],
+});
+
+export default socket;
