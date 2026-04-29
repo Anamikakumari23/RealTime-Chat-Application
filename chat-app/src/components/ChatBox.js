@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
 import socket from "../socket";
+import EmojiPicker from "emoji-picker-react";
 
 function ChatBox({ username, room }) {
   const [message, setMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
   const [showMenu, setShowMenu] = useState(false);
+  const [showEmoji, setShowEmoji] = useState(false);
 
   // ✅ Join room
   useEffect(() => {
     if (!username || !room) return;
-
     socket.emit("join_room", { username, room });
   }, [username, room]);
 
@@ -45,6 +46,12 @@ function ChatBox({ username, room }) {
     setMessage("");
   };
 
+  // ✅ Emoji click
+  const handleEmojiClick = (emojiData) => {
+    setMessage((prev) => prev + emojiData.emoji);
+    setShowEmoji(false);
+  };
+
   // ✅ Clear chat
   const clearChat = () => {
     setMessageList([]);
@@ -59,7 +66,7 @@ function ChatBox({ username, room }) {
   return (
     <div style={styles.wrapper}>
       <div style={styles.chatBox}>
-        
+
         {/* 🔥 HEADER */}
         <div style={styles.header}>
           <div style={styles.headerLeft}>
@@ -115,6 +122,15 @@ function ChatBox({ username, room }) {
 
         {/* ✍️ INPUT */}
         <div style={styles.inputArea}>
+
+          {/* 😊 Emoji button */}
+          <button
+            style={styles.emojiBtn}
+            onClick={() => setShowEmoji(!showEmoji)}
+          >
+            😊
+          </button>
+
           <input
             style={styles.input}
             value={message}
@@ -126,6 +142,13 @@ function ChatBox({ username, room }) {
             ➤
           </button>
         </div>
+
+        {/* 😍 Emoji Picker */}
+        {showEmoji && (
+          <div style={styles.emojiPicker}>
+            <EmojiPicker onEmojiClick={handleEmojiClick} />
+          </div>
+        )}
 
       </div>
     </div>
@@ -149,6 +172,7 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     overflow: "hidden",
+    position: "relative",
   },
 
   header: {
@@ -240,6 +264,7 @@ const styles = {
     display: "flex",
     padding: 10,
     background: "white",
+    alignItems: "center",
   },
 
   input: {
@@ -258,6 +283,21 @@ const styles = {
     background: "#818cf8",
     color: "white",
     cursor: "pointer",
+  },
+
+  emojiBtn: {
+    background: "none",
+    border: "none",
+    fontSize: 22,
+    cursor: "pointer",
+    marginRight: 5,
+  },
+
+  emojiPicker: {
+    position: "absolute",
+    bottom: 70,
+    left: 10,
+    zIndex: 10,
   },
 };
 
