@@ -50,7 +50,6 @@ const styles = {
   },
   title: {
     textAlign: "center",
-    marginBottom: 10,
   },
   input: {
     padding: 12,
@@ -58,7 +57,6 @@ const styles = {
     border: "none",
     background: "#f1f5f9",
     outline: "none",
-    fontSize: 14,
   },
   loginBtn: {
     padding: 12,
@@ -67,7 +65,6 @@ const styles = {
     background: "#818cf8",
     color: "white",
     cursor: "pointer",
-    fontWeight: "bold",
   },
   registerBtn: {
     padding: 12,
@@ -76,6 +73,5 @@ const styles = {
     background: "#FBCFE8",
     color: "#831843",
     cursor: "pointer",
-    fontWeight: "bold",
   },
 };

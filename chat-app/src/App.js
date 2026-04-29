@@ -8,10 +8,9 @@ function App() {
   const [password, setPassword] = useState("");
   const [showChat, setShowChat] = useState(false);
 
-  // 🔥 Your deployed backend URL
   const BACKEND_URL = "https://chatverse-backend-c441.onrender.com";
 
-  // ================= LOGIN =================
+  // LOGIN
   const login = async () => {
     if (!username || !password) {
       alert("Please enter username and password");
@@ -24,17 +23,20 @@ function App() {
         password,
       });
 
-      console.log("Login success:", res.data);
-      alert("Login successful ✅");
+      if (res.data.error) {
+        alert(res.data.error);
+        return;
+      }
 
+      alert("Login successful ✅");
       setShowChat(true);
     } catch (err) {
-      console.error("Login error:", err);
-      alert("Login failed ❌ (check username/password)");
+      console.error(err);
+      alert("Login failed ❌");
     }
   };
 
-  // ================= REGISTER =================
+  // REGISTER
   const register = async () => {
     if (!username || !password) {
       alert("Please enter username and password");
@@ -47,15 +49,18 @@ function App() {
         password,
       });
 
-      console.log("Register success:", res.data);
+      if (res.data.error) {
+        alert(res.data.error);
+        return;
+      }
+
       alert("Registered successfully ✅");
     } catch (err) {
-      console.error("Register error:", err);
-      alert("Register failed ❌ (user may already exist)");
+      console.error(err);
+      alert("Register failed ❌");
     }
   };
 
-  // ================= UI =================
   return (
     <div>
       {!showChat ? (

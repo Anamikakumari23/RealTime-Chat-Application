@@ -1,3 +1,11 @@
+const mongoose = require("mongoose");
+
+mongoose.connect(process.env.MONGO_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log("MongoDB connected ✅"))
+.catch((err) => console.log("MongoDB error ❌", err));
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
