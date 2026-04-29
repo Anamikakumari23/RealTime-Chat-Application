@@ -1,39 +1,34 @@
-const mongoose = require("mongoose");
-
-mongoose.connect(process.env.MONGO_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log("MongoDB connected ✅"))
-.catch((err) => console.log("MongoDB error ❌", err));
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
+const mongoose = require("mongoose");
 
-const authRoutes = require("./routes/auth"); // 👈 ADD THIS
+// 👉 Import routes
+const authRoutes = require("./routes/auth");
 
 const app = express();
 
-// 🔥 CORS
-app.use(cors({
-  origin: "*",
-}));
+// 🔥 MONGODB CONNECTION (VERY IMPORTANT)
+mongoose.connect(process.env.MONGO_URL)
+  .then(() => console.log("MongoDB connected ✅"))
+  .catch((err) => console.log("MongoDB error ❌", err));
 
-// 🔥 Body parser
+// 🔥 MIDDLEWARE
+app.use(cors({ origin: "*" }));
 app.use(express.json());
 
-// 🔥 CONNECT AUTH ROUTES (VERY IMPORTANT)
-app.use("/auth", authRoutes); // 👈 THIS WAS MISSING
+// 🔥 ROUTES
+app.use("/auth", authRoutes);
 
-// 👇 Optional route
+// 👉 Test route
 app.get("/", (req, res) => {
   res.send("Backend is running 🚀");
 });
 
 const server = http.createServer(app);
 
-// 🔥 Socket.IO setup
+// 🔥 SOCKET.IO
 const io = new Server(server, {
   cors: {
     origin: "*",
@@ -60,7 +55,7 @@ io.on("connection", (socket) => {
     socket.to(data.room).emit("receive_message", data);
   });
 
-  // Typing indicator
+  // Typing
   socket.on("typing", ({ username, room }) => {
     socket.to(room).emit("typing", username);
   });
