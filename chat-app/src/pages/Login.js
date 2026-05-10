@@ -1,23 +1,31 @@
-
-import React from "react";
-
-export default function Login({ setUsername, setPassword, login, register }) {
+export default function Login({
+  setUsername,
+  setPassword,
+  login,
+  register,
+}) {
   return (
     <div style={styles.bg}>
       <div style={styles.card}>
-        <h2 style={styles.title}>Welcome ChatVerse 🌐</h2>
+        <h2 style={styles.title}>
+          Welcome ChatVerse 🌐
+        </h2>
 
         <input
           style={styles.input}
           placeholder="Username"
-          onChange={(e) => setUsername(e.target.value)}
+          onChange={(e) =>
+            setUsername(e.target.value)
+          }
         />
 
         <input
           style={styles.input}
           type="password"
           placeholder="Password"
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) =>
+            setPassword(e.target.value)
+          }
         />
 
         <button
@@ -55,13 +63,12 @@ const styles = {
     background: "white",
     display: "flex",
     flexDirection: "column",
-    gap: 15,
+    gap: 12,
     boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
   },
 
   title: {
     textAlign: "center",
-    marginBottom: 10,
   },
 
   input: {
@@ -70,14 +77,13 @@ const styles = {
     border: "none",
     background: "#f1f5f9",
     outline: "none",
-    fontSize: 14,
   },
 
   loginBtn: {
     padding: 12,
     borderRadius: 25,
     border: "none",
-    background: "#6366f1",
+    background: "#818cf8",
     color: "white",
     cursor: "pointer",
     fontWeight: "bold",

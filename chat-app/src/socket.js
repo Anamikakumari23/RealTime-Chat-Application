@@ -1,9 +1,7 @@
 import { io } from "socket.io-client";
 
-const URL = "https://chatverse-backend-c441.onrender.com";
-
-const socket = io(URL, {
-  transports: ["websocket"],
-});
+const socket = io(
+  "https://chatverse-backend-c441.onrender.com"
+);
 
 export default socket;
