@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
 import socket from "../socket";
+import EmojiPicker from "emoji-picker-react";
 
 function ChatBox({ username, room }) {
   const [message, setMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
+  const [showEmoji, setShowEmoji] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
 
+  // JOIN ROOM
   useEffect(() => {
     if (!username || !room) return;
 
@@ -15,27 +19,36 @@ function ChatBox({ username, room }) {
 
   }, [username, room]);
 
+  // RECEIVE MESSAGES
   useEffect(() => {
     const receiveHandler = (data) => {
+      setMessageList((list) => [...list, data]);
+    };
+
+    // USER JOINED
+    const joinedHandler = (data) => {
       setMessageList((list) => [
         ...list,
-        data,
+        {
+          author: "System",
+          message: `${data.username} joined the room 🎉`,
+          time: new Date().toLocaleTimeString(),
+        },
       ]);
     };
 
-    socket.on(
-      "receive_message",
-      receiveHandler
-    );
+    socket.on("receive_message", receiveHandler);
+
+    socket.on("user_joined", joinedHandler);
 
     return () => {
-      socket.off(
-        "receive_message",
-        receiveHandler
-      );
+      socket.off("receive_message", receiveHandler);
+
+      socket.off("user_joined", joinedHandler);
     };
   }, []);
 
+  // SEND MESSAGE
   const sendMessage = () => {
     if (message.trim() === "") return;
 
@@ -48,28 +61,76 @@ function ChatBox({ username, room }) {
 
     socket.emit("send_message", msgData);
 
-    setMessageList((list) => [
-      ...list,
-      msgData,
-    ]);
+    setMessageList((list) => [...list, msgData]);
 
     setMessage("");
   };
 
+  // EMOJI
+  const onEmojiClick = (emojiData) => {
+    setMessage((prev) => prev + emojiData.emoji);
+  };
+
+  // CLEAR CHAT
+  const clearChat = () => {
+    setMessageList([]);
+    setShowMenu(false);
+  };
+
+  // LOGOUT
+  const logout = () => {
+    window.location.reload();
+  };
+
   return (
     <div style={styles.container}>
+
+      {/* HEADER */}
       <div style={styles.header}>
+
         <div>
           <h2 style={{ margin: 0 }}>
-            Live Chat 💬
+            {room}
           </h2>
 
           <p style={{ margin: 0 }}>
-            Room: {room}
+            Online
           </p>
+        </div>
+
+        {/* 3 DOT */}
+        <div style={{ position: "relative" }}>
+
+          <button
+            style={styles.menuBtn}
+            onClick={() =>
+              setShowMenu(!showMenu)
+            }
+          >
+            ⋮
+          </button>
+
+          {showMenu && (
+            <div style={styles.dropdown}>
+              <p
+                style={styles.dropdownItem}
+                onClick={clearChat}
+              >
+                Clear Chat
+              </p>
+
+              <p
+                style={styles.dropdownItem}
+                onClick={logout}
+              >
+                Logout
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
+      {/* CHAT AREA */}
       <div style={styles.chatBox}>
         {messageList.map((msg, index) => (
           <div
@@ -77,6 +138,8 @@ function ChatBox({ username, room }) {
             style={
               msg.author === username
                 ? styles.myMessage
+                : msg.author === "System"
+                ? styles.systemMessage
                 : styles.otherMessage
             }
           >
@@ -91,10 +154,26 @@ function ChatBox({ username, room }) {
         ))}
       </div>
 
+      {/* EMOJI PICKER */}
+      {showEmoji && (
+        <div style={styles.emojiPicker}>
+          <EmojiPicker
+            onEmojiClick={onEmojiClick}
+          />
+        </div>
+      )}
+
+      {/* INPUT AREA */}
       <div style={styles.inputArea}>
-        <span style={styles.emoji}>
+
+        <button
+          style={styles.emojiBtn}
+          onClick={() =>
+            setShowEmoji(!showEmoji)
+          }
+        >
           😊
-        </span>
+        </button>
 
         <input
           style={styles.input}
@@ -129,12 +208,40 @@ const styles = {
     height: "90vh",
     display: "flex",
     flexDirection: "column",
+    position: "relative",
   },
 
   header: {
     background: "white",
     padding: 20,
     borderBottom: "1px solid #ddd",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+
+  menuBtn: {
+    border: "none",
+    background: "transparent",
+    fontSize: 22,
+    cursor: "pointer",
+  },
+
+  dropdown: {
+    position: "absolute",
+    right: 0,
+    top: 30,
+    background: "white",
+    borderRadius: 10,
+    boxShadow:
+      "0 4px 10px rgba(0,0,0,0.1)",
+    overflow: "hidden",
+  },
+
+  dropdownItem: {
+    padding: 10,
+    cursor: "pointer",
+    margin: 0,
   },
 
   chatBox: {
@@ -162,6 +269,14 @@ const styles = {
     maxWidth: "70%",
   },
 
+  systemMessage: {
+    alignSelf: "center",
+    background: "#DDD6FE",
+    padding: 10,
+    borderRadius: 10,
+    fontSize: 14,
+  },
+
   time: {
     fontSize: 12,
   },
@@ -174,8 +289,11 @@ const styles = {
     background: "white",
   },
 
-  emoji: {
+  emojiBtn: {
+    border: "none",
+    background: "transparent",
     fontSize: 24,
+    cursor: "pointer",
   },
 
   input: {
@@ -196,6 +314,12 @@ const styles = {
     color: "white",
     fontSize: 18,
     cursor: "pointer",
+  },
+
+  emojiPicker: {
+    position: "absolute",
+    bottom: 80,
+    left: 10,
   },
 };
 
