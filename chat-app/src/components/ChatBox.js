@@ -90,7 +90,7 @@ function ChatBox({ username, room }) {
 
         <div>
           <h2 style={{ margin: 0 }}>
-            {room}
+            {username}
           </h2>
 
           <p style={{ margin: 0 }}>
